@@ -14,6 +14,7 @@ class LEDThread(threading.Thread):
         self._mode = 0
         
         self._effects = [Off(pixelcount),
+                   White(pixelcount),      
                    SingleColor(pixelcount),
                    RainbowColors(pixelcount),
                    RainbowCycle(pixelcount),

@@ -36,7 +36,7 @@ class _UniColor(_BaseEffect):
     
     def light_down(self, step):
         #print self.get_name() + ": light down"
-        self._l = max(0.02, self._l - step)
+        self._l = max(0.2, self._l - step)
         self._update_color()
 
     def get_light(self): 
@@ -65,6 +65,22 @@ class SingleColor(_UniColor):
         self._wait()
    
 
+
+class White(SingleColor):
+
+    def __init__(self, pixelcount):
+        super(White, self).__init__(pixelcount)
+        self._h, self._l, self._s = 0, 1.0, 0
+
+    def get_name(self):
+        return "White"
+    
+    def next_color(self, step):
+        pass
+
+    def prev_color(self, step):
+        pass
+       
 
 class AppearFromBack(_UniColor):
     

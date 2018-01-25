@@ -60,9 +60,15 @@ class SingleColor(_UniColor):
         
     def _show(self):
         super(SingleColor, self)._update_color()
-        self._set_all_pixels(self._r, self._g, self._b)
-        self._flush()
-        self._wait()
+#         can't do just that because colors change by their own :-(        
+#         self._set_all_pixels(self._r, self._g, self._b)
+#         self._flush()
+#         self._wait()
+        
+        while not self._hide:
+            self._set_all_pixels(self._r, self._g, self._b)
+            self._flush()
+            self._wait(1)
    
 
 
@@ -80,7 +86,40 @@ class White(SingleColor):
 
     def prev_color(self, step):
         pass
+
        
+
+class KnightRider(_UniColor):
+    
+    def __init__(self, pixelcount):
+        super(KnightRider, self).__init__(pixelcount)
+        self._h, self._l, self._s = 0, 0.5, 1.0  # red
+
+    def get_name(self):
+        return "Knight Rider"
+
+    def _show(self):
+        self._update_color()
+        count = self.get_count()
+        while not self._hide:
+            if self._hide: return
+            for offset in range(count-7):
+                self._renderAt(offset)
+                if self._hide: return
+                self._wait(0.02)
+            for offset in reversed(range(count-7)):
+                self._renderAt(offset)
+                if self._hide: return
+                self._wait(0.02)
+     
+    def _renderAt(self, offset):       
+        self._clear()
+        for idx, l in enumerate([0.1, 0.3, 0.7, 1.0, 0.7, 0.3, 0.1]):
+            self._set_pixel(offset + idx, int(l * self._r), self._g, self._b )
+        self._flush()
+    
+
+
 
 class AppearFromBack(_UniColor):
     

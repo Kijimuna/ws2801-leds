@@ -16,6 +16,7 @@ class LEDThread(threading.Thread):
         self._effects = [Off(pixelcount),
                    White(pixelcount),      
                    SingleColor(pixelcount),
+                   KnightRider(pixelcount),
                    RainbowColors(pixelcount),
                    RainbowCycle(pixelcount),
                    RainbowCycleSuccessive(pixelcount),
@@ -75,8 +76,8 @@ class LEDThread(threading.Thread):
             self._effects[old_mode].hide()
 
     def run(self):
-        print "Starting thread ..."
+        print "Starting LED thread ..."
         while not self._shutdown:
             self._effects[self._mode].show()  # blocks until hide() or _wake()
-        print "Shutdown thread..."
+        print "Shutdown LED thread..."
 

@@ -56,6 +56,7 @@ class SingleColor(_UniColor):
         return "Single Color"
     
     def _update_color(self):    
+        super(SingleColor, self)._update_color()
         self._wake()
         
     def _show(self):

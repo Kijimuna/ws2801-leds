@@ -7,7 +7,7 @@ from ediplug.smartplug import SmartPlug
 
 class OnOff(object):
     
-    def __init__(self, led_thread, host='192.168.1.35', username='admin', password='493856'):
+    def __init__(self, led_thread, host='192.168.1.35', username='admin', password='1234'):
         self._led_thread = led_thread
         self._ediplug = SmartPlug(host, (username, password))
         print ('Found edimax smartplug')

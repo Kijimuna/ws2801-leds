@@ -1,5 +1,5 @@
 import sys
-from leds import LEDThread
+from leds import LEDThread, OnOff
 from slider import SliderThread, UP, DOWN
 
 try:
@@ -21,18 +21,47 @@ def register_trigger_button(button, function):
     trigger_buttons[button] = function;
 
 
+def on_off():
+    if on_off_switch.is_on():
+        on_off_switch.off()
+    else:    
+        on_off_switch.on()
+
+def next_mode():
+    if on_off_switch.is_on():
+        led_thread.next_mode()
+
+def light_up():
+    if on_off_switch.is_on():
+        led_thread.light_up()
+
+def light_down():
+    if on_off_switch.is_on():
+        led_thread.light_down()
+
+def next_color():
+    if on_off_switch.is_on():
+        led_thread.next_color()
+
+def prev_color():
+    if on_off_switch.is_on():
+        led_thread.prev_color()
+
+
 if __name__ == '__main__':
 
+
     led_thread = LEDThread()
-
+    on_off_switch = OnOff(led_thread)
+    
     slider_thread = SliderThread()
-    slider_thread.registerSlider('light', led_thread.light_up, led_thread.light_down)
-    slider_thread.registerSlider('color', led_thread.next_color, led_thread.prev_color)
+    slider_thread.registerSlider('light', light_up, light_down)
+    slider_thread.registerSlider('color', next_color, prev_color)
 
-    register_trigger_button(288, led_thread.on_off)    # button 1
+    register_trigger_button(288, on_off)    # button 1
     register_slider_buttons(290, 294, 'light')         # button  2, 3
     register_slider_buttons(295, 298, 'color')         # buttons 4, 5
-    register_trigger_button(299, led_thread.next_mode) # button 6
+    register_trigger_button(299, next_mode) # button 6
     
     led_thread.start()
     slider_thread.start()

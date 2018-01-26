@@ -31,21 +31,21 @@ def next_mode():
     if on_off_switch.is_on():
         led_thread.next_mode()
 
-def light_up():
+def light_up(step):
     if on_off_switch.is_on():
-        led_thread.light_up()
+        led_thread.light_up(step)
 
-def light_down():
+def light_down(step):
     if on_off_switch.is_on():
-        led_thread.light_down()
+        led_thread.light_down(step)
 
-def next_color():
+def next_color(step):
     if on_off_switch.is_on():
-        led_thread.next_color()
+        led_thread.next_color(step)
 
-def prev_color():
+def prev_color(step):
     if on_off_switch.is_on():
-        led_thread.prev_color()
+        led_thread.prev_color(step)
 
 
 if __name__ == '__main__':

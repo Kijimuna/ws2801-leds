@@ -14,8 +14,7 @@ class OnOff(object):
         if self._ediplug.state == 'OFF':
             self._on = False   
         else:
-            print ('Oops, leds are already on.')
-            self._on = True
+            print ('Oops, leds are already on. This is unsuspected on boot. Better turn them off ...')
             self._off()
         
     
@@ -23,16 +22,15 @@ class OnOff(object):
         return self._on
 
     def on(self):
-        if not self.is_on():
+        if self._ediplug.state == 'OFF':
             print ('Turning leds on.')
             self._ediplug.state = 'ON'
-            time.sleep(2)
             self._on = True
             self._led_thread.set_mode(2)
             print ('Turned leds on.')
     
     def off(self):
-        if self.is_on():
+        if self._ediplug.state == 'ON':
             print ('Turning leds off.')
             self._led_thread.set_mode(0)
             time.sleep(0.3)

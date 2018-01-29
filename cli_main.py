@@ -1,8 +1,17 @@
-import sys
+import sys, time
+
+from power import SwitchablePower
 from leds import LEDThread
 
 led_thread = LEDThread(9)
+
+#power = EdimaxPowerPlug(led_thread)
+power = SwitchablePower(led_thread)
+power.on()
+
+time.sleep(1)
 led_thread.start()
+
 
 while led_thread.is_running():
     try:

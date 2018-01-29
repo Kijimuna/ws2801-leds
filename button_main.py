@@ -1,5 +1,6 @@
 import sys
-from leds import LEDThread, OnOff
+from power import EdimaxPowerPlug
+from leds import LEDThread
 from slider import SliderThread, UP, DOWN
 
 try:
@@ -52,7 +53,7 @@ if __name__ == '__main__':
 
 
     led_thread = LEDThread()
-    on_off_switch = OnOff(led_thread)
+    on_off_switch = EdimaxPowerPlug(led_thread)
     
     slider_thread = SliderThread()
     slider_thread.registerSlider('light', light_up, light_down)

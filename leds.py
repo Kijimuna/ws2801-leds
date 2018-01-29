@@ -2,44 +2,7 @@ import threading, time
 from effects.off import Off
 from effects.unicolor import *
 from effects.multicolor import *
-from ediplug.smartplug import SmartPlug
-
-
-class OnOff(object):
-    
-    def __init__(self, led_thread, host='192.168.1.35', username='admin', password='1234'):
-        self._led_thread = led_thread
-        self._ediplug = SmartPlug(host, (username, password))
-        print ('Found edimax smartplug')
-        if self._ediplug.state == 'OFF':
-            self._on = False   
-        else:
-            print ('Oops, leds are already on. This is unsuspected on boot. Better turn them off ...')
-            self._off()
-        
-    
-    def is_on(self):
-        return self._on
-
-    def on(self):
-        if self._ediplug.state == 'OFF':
-            print ('Turning leds on.')
-            self._ediplug.state = 'ON'
-            self._on = True
-            self._led_thread.set_mode(2)
-            print ('Turned leds on.')
-    
-    def off(self):
-        if self._ediplug.state == 'ON':
-            print ('Turning leds off.')
-            self._led_thread.set_mode(0)
-            time.sleep(0.3)
-            self._ediplug.state = 'OFF'
-            self._on = False
-            print ('Turned leds off.')
             
-            
-
 class LEDThread(threading.Thread):
 
     def __init__(self, pixelcount=183):
@@ -71,6 +34,13 @@ class LEDThread(threading.Thread):
 
     def is_running(self):
         return not self._shutdown    
+    
+    def on_power_on(self):
+        self.set_mode(2)
+
+    def before_power_off(self):
+        self.set_mode(0)
+        time.sleep(0.3)
             
     def next_color(self, step=0.01):
         self.current_effect().next_color(step)

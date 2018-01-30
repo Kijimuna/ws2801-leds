@@ -13,11 +13,16 @@ class SwitchablePower(object):
     
     def __init__(self, callback):
         self._callback = callback
-        if self._is_off():
+        try:
+            if self._is_off():
+                self._on = False   
+            else:
+                print ('Oops, power is already on on boot. This is unsuspected on boot. Better turn it off ...')
+                self.off()
+        except Exception as e:
+            print ("Failed to request power state on boot ... let's hope it is off ;-)")
+            print(e.__str__())
             self._on = False   
-        else:
-            print ('Oops, power is already on. This is unsuspected on boot. Better turn it off ...')
-            self.off()
         
     
     def is_on(self):
@@ -27,24 +32,33 @@ class SwitchablePower(object):
         return self._on
 
     def on(self):
-        if self._is_off():
-            print ('Turning power on.')
-            self._turn_on()
-            print ('Turned power on.')
-        else:
-            print ('Power is already on.')
-        self._on = True
-        self._callback.on_power_on()
+        try:
+            if self._is_off():
+                print ('Turning power on.')
+                self._turn_on()
+                print ('Turned power on.')
+            else:
+                print ('Power is already on.')
+            self._on = True
+            self._callback.on_power_on()
+        except Exception as e:
+            print ("Failed to connect to power switch, can't turn it on")
+            print(e.__str__())
+
             
     def off(self):
         self._callback.before_power_off()
-        if self._is_on():
-            print ('Turning power off.')
-            self._turn_off()
-            print ('Turned power off.')
-        else:
-            print ('Power is already off.')
-        self._on = False
+        try:
+            if self._is_on():
+                print ('Turning power off.')
+                self._turn_off()
+                print ('Turned power off.')
+            else:
+                print ('Power is already off.')
+            self._on = False
+        except Exception as e:
+            print ("Failed to connect to power switch, can't turn it off")
+            print(e.__str__())
 
 
     def _is_on(self):

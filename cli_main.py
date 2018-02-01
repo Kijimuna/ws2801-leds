@@ -1,7 +1,16 @@
-import sys, time
+import time
+import logging.config
+import yaml
 
 from power import SwitchablePower
 from leds import LEDThread
+
+logging.config.dictConfig(yaml.load(open('logging.yml', 'r')))
+
+logger = logging.getLogger(__name__)
+
+
+logger.info('Starting ...')
 
 led_thread = LEDThread(9)
 
@@ -37,7 +46,7 @@ while led_thread.is_running():
             else:
                 print "'" + value + "' is not recognized"
     except KeyboardInterrupt:
-        print >> sys.stderr, 'Shutdown ...'
+        logger.info('Shutting all down ...')
         led_thread.set_mode(1)
         led_thread.shutdown()
         led_thread.join()

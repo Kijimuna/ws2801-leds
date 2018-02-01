@@ -1,7 +1,9 @@
-import threading, time
+import threading, time, logging
 from effects.off import Off
 from effects.unicolor import *
 from effects.multicolor import *
+
+logger = logging.getLogger(__name__)
             
 class LEDThread(threading.Thread):
 
@@ -56,7 +58,7 @@ class LEDThread(threading.Thread):
                 
     def next_mode(self):  
         if self._mode == 0:
-            print 'Ignoring switch to next mode (leds are off)'
+            logger.error ('Ignoring switch to next mode (leds are off)')
             return
 
         new_mode = self._mode + 1
@@ -66,16 +68,16 @@ class LEDThread(threading.Thread):
         
     def set_mode(self, mode):
         if(not isinstance(mode, int) or mode >= len(self._effects) or mode < 0):
-            print 'Mode ' + str(mode) + ' is not known!'
+            logger.error ('Mode ' + str(mode) + ' is not known!')
         elif(mode != self._mode):
             old_mode = self._mode
-            print "Switching from '" + self._mode_name(old_mode) + "' to '" + self._mode_name(mode) + "'"
+            logger.info ("Switching from '" + self._mode_name(old_mode) + "' to '" + self._mode_name(mode) + "'")
             self._mode = mode
             self._effects[old_mode].hide()
 
     def run(self):
-        print "Starting LED thread ..."
+        logger.info("Starting LED thread ...")
         while not self._shutdown:
             self._effects[self._mode].show()  # blocks until hide() or _wake()
-        print "Shutdown LED thread..."
+        logger.info("Shutdown LED thread...")
 

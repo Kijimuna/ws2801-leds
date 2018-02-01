@@ -1,4 +1,8 @@
+import logging
 from spx import Smartplug
+
+logger = logging.getLogger(__name__)
+
 
 class SwitchablePower(object):
     """
@@ -17,13 +21,12 @@ class SwitchablePower(object):
             if self._is_off():
                 self._on = False   
             else:
-                print ('Oops, power is already on on boot. This is unsuspected on boot. Better turn it off ...')
+                logger.warn ('Oops, power is already on on boot. This is unsuspected on boot. Better turn it off ...')
                 self.off()
         except Exception as e:
-            print ("Failed to request power state on boot ... let's hope it is off ;-)")
-            print(e.__str__())
+            logger.error ("Failed to initalize power supply on boot ... let's hope it is off ;-)")
+            logger.error (e.__str__())
             self._on = False   
-        
     
     def is_on(self):
         """
@@ -34,32 +37,30 @@ class SwitchablePower(object):
     def on(self):
         try:
             if self._is_off():
-                print ('Turning power on.')
+                logger.info ('Turning power on.')
                 self._turn_on()
-                print ('Turned power on.')
+                logger.info  ('Turned power on.')
             else:
-                print ('Power is already on.')
+                logger.info  ('Power is already on.')
             self._on = True
             self._callback.on_power_on()
         except Exception as e:
-            print ("Failed to connect to power switch, can't turn it on")
-            print(e.__str__())
-
+            logger.error ("Failed to connect to power switch, can't turn it on")
+            logger.error (e.__str__())
             
     def off(self):
         self._callback.before_power_off()
         try:
             if self._is_on():
-                print ('Turning power off.')
+                logger.info ('Turning power off.')
                 self._turn_off()
-                print ('Turned power off.')
+                logger.info ('Turned power off.')
             else:
-                print ('Power is already off.')
+                logger.info ('Power is already off.')
             self._on = False
         except Exception as e:
-            print ("Failed to connect to power switch, can't turn it off")
-            print(e.__str__())
-
+            logger.error ("Failed to connect to power switch, can't turn it off")
+            logger.error (e.__str__())
 
     def _is_on(self):
         """
@@ -86,7 +87,7 @@ class EdimaxPowerPlug(SwitchablePower):
     """
     
     def __init__(self, callback, host='192.168.1.35', username='admin', password='1234'):
-        print ('Using edimax smartplug as switchable power supply.')
+        logger.info ('Using edimax smartplug as switchable power supply.')
         self._ediplug = Smartplug(host, username, password)
         super(EdimaxPowerPlug, self).__init__(callback)
             

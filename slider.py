@@ -1,8 +1,9 @@
-import threading, time
+import threading, logging, time
+
+logger = logging.getLogger(__name__)
 
 DOWN = 0
 UP = 1
-
 
 class SliderThread(threading.Thread):
 
@@ -53,7 +54,7 @@ class SliderThread(threading.Thread):
         return not self._shutdown    
         
     def run(self):
-        print "Starting slider thread ..."
+        logger.info("Starting slider thread ...")
         while not self._shutdown:
 
             # sleep until we have work to do
@@ -74,7 +75,7 @@ class SliderThread(threading.Thread):
                     self._cond.release()        
                 time.sleep(self._wait)
                 
-        print "Shutdown slider thread..."    
+        logger.info("Shutdown slider thread...")    
         
         
 if __name__ == '__main__':

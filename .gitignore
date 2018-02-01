@@ -1,5 +1,6 @@
 .metadata
 .project
 .pydevproject
+bedpipy.log*
 
 **/*.pyc

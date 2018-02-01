@@ -20,22 +20,18 @@ class _UniColor(_BaseEffect):
         self._r, self._g, self._b = int(round(r * 255.0)), int(round(g * 255.0)), int(round(b * 255.0))
     
     def next_color(self, step):
-        #print self.get_name() + ": next color"
         self._h = (self._h + step) % 1 # h=0|1 -> red h=1/3 -> green h=2/3=blue
         self._update_color()
 
     def prev_color(self, step):
-        #print self.get_name() + ": prev color"
         self._h = (self._h - step) % 1
         self._update_color()
     
     def light_up(self, step):
-        #print self.get_name() + ": light up"
         self._l = min(1.0, self._l + step) # l=1 -> white, l=0 -> black , l=0.5 plain color
         self._update_color()
     
     def light_down(self, step):
-        #print self.get_name() + ": light down"
         self._l = max(0.2, self._l - step)
         self._update_color()
 

@@ -1,4 +1,6 @@
-import threading
+import threading, logging
+
+logger = logging.getLogger(__name__)
 
 try:
     import RPi.GPIO as GPIO
@@ -52,7 +54,7 @@ class _BaseEffect(object):
     def show(self):
         try:
             self._cond.acquire()
-            print "Showing '" + self.get_name() + "'"
+            logger.info ("Showing '" + self.get_name() + "'")
             self._hide = False
         finally:
             self._cond.release()
@@ -64,7 +66,7 @@ class _BaseEffect(object):
     def hide(self):
         try:
             self._lock.acquire()
-            print "Hiding '" + self.get_name() + "'"
+            logger.info ("Hiding '" + self.get_name() + "'")
             self._hide = True
             self._cond.notify()
         finally:

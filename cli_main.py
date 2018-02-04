@@ -1,11 +1,13 @@
-import time
 import logging.config
 import yaml
 
-from power import SwitchablePower
+logging.config.dictConfig(yaml.load(open('logging_dev.yml', 'r')))
+
+import time
+
+from power import FixPowerSupply
 from leds import LEDThread
 
-logging.config.dictConfig(yaml.load(open('logging.yml', 'r')))
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +16,7 @@ logger.info('Starting ...')
 
 led_thread = LEDThread(9)
 
-#power = EdimaxPowerPlug(led_thread)
-power = SwitchablePower(led_thread)
+power = FixPowerSupply(led_thread)
 power.on()
 
 time.sleep(1)

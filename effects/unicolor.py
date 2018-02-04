@@ -130,18 +130,20 @@ class AppearFromBack(_UniColor):
         self._update_color()
         count = self.get_count()
         while not self._hide:
-            for i in range(count):
-                for run in reversed(range(i, count)):
+            for i in range(count/2):
+                for run in reversed(range(i, count/2)):
                     if self._hide: return
                     self._clear()
                     
                     # already cumulated pixels
                     for led in range(i):
-                        self._set_pixel(led, self._r, self._g, self._b)
+                        self._set_pixel(2*led, self._r, self._g, self._b)
+                        self._set_pixel(2*led+1, self._r, self._g, self._b)
                     
                     # running pixel
-                    self._set_pixel(run, self._r, self._g, self._b)
+                    self._set_pixel(2*run, self._r, self._g, self._b)
+                    self._set_pixel(2*run+1, self._r, self._g, self._b)
                     
                     self._flush()
                     if self._hide: return
-                    self._wait(0.005)                
+                    self._wait(0.001)                

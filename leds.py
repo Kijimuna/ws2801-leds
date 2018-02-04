@@ -15,14 +15,18 @@ class LEDThread(threading.Thread):
         self._mode = 0
         
         self._effects = [Off(pixelcount),
-                   White(pixelcount),      
-                   SingleColor(pixelcount),
                    KnightRider(pixelcount),
+                   Arthur3(pixelcount),
+                   MovingRGBCycle(pixelcount),
+                   Arthur2(pixelcount),
+                   Arthur(pixelcount),
+#                   White(pixelcount),      
+                   SingleColor(pixelcount),
                    RainbowColors(pixelcount),
                    RainbowCycle(pixelcount),
                    RainbowCycleSuccessive(pixelcount),
-                   MovingRGBCycle(pixelcount),
-                   AppearFromBack(pixelcount)]       
+                   AppearFromBack(pixelcount)
+                   ]       
     
     def _mode_name(self, mode):
         return self._effects[mode].get_name()
@@ -38,7 +42,7 @@ class LEDThread(threading.Thread):
         return not self._shutdown    
     
     def on_power_on(self):
-        self.set_mode(2)
+        self.set_mode(1)
 
     def before_power_off(self):
         self.set_mode(0)

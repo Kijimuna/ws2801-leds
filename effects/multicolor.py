@@ -37,7 +37,7 @@ class RainbowColors(_BaseEffect):
                     self._set_pixel(led, r, g, b)
                 self._flush()
                 if self._hide: return
-                self._wait(0.05)                
+                self._wait(0.001)                
 
 
 class RainbowCycle(_BaseEffect):
@@ -58,7 +58,7 @@ class RainbowCycle(_BaseEffect):
                     self._set_pixel(led, r, g, b)
                 self._flush()
                 if self._hide: return
-                self._wait(0.01) 
+                self._wait(0.001) 
 
                 
 class RainbowCycleSuccessive(_BaseEffect):
@@ -110,3 +110,64 @@ class MovingRGBCycle(_BaseEffect):
                 self._flush()
                 if self._hide: return
                 self._wait(0.01)
+
+class Arthur(_BaseEffect):
+    
+    def __init__(self, pixelcount):
+        super(Arthur, self).__init__(pixelcount)
+
+    def get_name(self):
+        return "Arthur's effect"
+
+    def _show(self):
+        count = self.get_count()
+        self._clear()
+        while not self._hide:
+            for i in range(count-1):
+                self._set_all_pixels(0, 255, 0)
+                self._set_pixel(i, 255, 0, 0)
+                self._set_pixel(i+1, 255, 0, 0)
+                self._flush()
+                if self._hide: return
+                self._wait(0.01)
+                
+class Arthur2(_BaseEffect):
+    
+    def __init__(self, pixelcount):
+        super(Arthur2, self).__init__(pixelcount)
+
+    def get_name(self):
+        return "Arthur's second effect"
+
+    def _show(self):
+        count = self.get_count()
+        while not self._hide:
+            self._set_all_pixels(0, 255, 0)
+            for color in range(256):
+                r, g, b = _wheel((color*7)%256)
+                
+                for i in range(count//2 + count%2):
+                    self._set_pixel(i*2, r, g, b)
+                self._flush()
+                if self._hide: return
+                self._wait(0.02)                
+                
+class Arthur3(_BaseEffect):
+    
+    def __init__(self, pixelcount):
+        super(Arthur3, self).__init__(pixelcount)
+
+    def get_name(self):
+        return "Arthur's third effect"
+
+    def _show(self):
+        count = self.get_count()
+        while not self._hide:
+            for color in range(256):
+                for led in range(count):
+                    if self._hide: return
+                    r, g, b = _wheel((256 // count + (17*led)+ (17*color)) % 256)
+                    self._set_pixel(led, r, g, b)
+                self._flush()
+                if self._hide: return
+                self._wait(0.05)                

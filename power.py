@@ -4,9 +4,9 @@ from spx import Smartplug
 logger = logging.getLogger(__name__)
 
 
-class SwitchablePower(object):
+class PowerSupply(object):
     """
-    This is the base class of switchable power plugs.
+    This is the base class of power supply.
     The methods to turn the power of or on send switch the respective power supply hardware 
     of concrete implementations and invokes on_power_on()/before_power_off() on the callback
     objects that relies on the power supply in the real world.
@@ -80,10 +80,20 @@ class SwitchablePower(object):
     def _turn_off(self):
         pass
 
-            
-class EdimaxPowerPlug(SwitchablePower):
+
+class FixPowerSupply(PowerSupply):
     """
-    Edimax SP-1101W implementation of the SwitchablePower class.
+    Power supply that is not programmatically switchable.
+    """
+    
+    def __init__(self, callback):
+        logger.info ('Using a not programmatically switchable power supply.')
+        super(FixPowerSupply, self).__init__(callback)
+            
+            
+class EdimaxPowerPlug(PowerSupply):
+    """
+    Edimax SP-1101W implementation of the PowerSupply class.
     """
     
     def __init__(self, callback, host='192.168.1.35', username='admin', password='1234'):

@@ -1,9 +1,11 @@
 import logging.config
 import yaml
+import sys
 
 logging.config.dictConfig(yaml.load(open('logging.yml', 'r')))
 
-from power import EdimaxPowerPlug
+import argparse
+from power import EdimaxPowerPlug, FixPowerSupply
 from leds import LEDThread
 from slider import SliderThread, UP, DOWN
 
@@ -66,37 +68,61 @@ def log_button_event(event):
         
     logger.info("Recognized " + button_name + ": " + str(categorize(event)))
                 
-
+def find_joystick(name):
+    all_found = []
+    try:
+        for i in range(10):
+            device_file = '/dev/input/event' + str(i)
+            device = InputDevice(device_file)
+            found = str(device)
+            if name in found:
+                logger.info("Found joystick: " + found)
+                return device
+            else:
+                all_found.append(found)    
+    except:
+        logger.error("Did not find a joystick named '" + name + "'. Found the following devices:")
+        for found in all_found:
+            logger.error("\t" + found)
     
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser(description='Starts button-based WS2801 controller')
+    parser.add_argument("-joy", required=True, metavar='joystick_name', help="Name of the joystick to use")
+    parser.add_argument("-edimax", required=False, nargs=2, metavar=('host', 'pass'), help="Use edimax power supply")
+    args = parser.parse_args()
 
+    joystick = find_joystick(args.joy)   
+    if joystick is None: 
+        sys.exit()
+ 
     led_thread = LEDThread()
-    on_off_switch = EdimaxPowerPlug(led_thread)
-
+    if args.edimax == None:
+        on_off_switch = FixPowerSupply(led_thread)
+    else: 
+        on_off_switch = EdimaxPowerPlug(led_thread, args.edimax[0], 'admin', args.edimax[1])
+ 
     button_names[288] = "On/Off Button"
     button_names[290] = "Left Light Button"
     button_names[294] = "Right Light Button"
     button_names[295] = "Left Color Button"
     button_names[298] = "Right Color Button"
     button_names[299] = "Next Effect Button"
-    
+     
     register_trigger_button(288, on_off)    # button 1
     register_slider_buttons(290, 294, 'light')         # button  2, 3
     register_slider_buttons(295, 298, 'color')         # buttons 4, 5
     register_trigger_button(299, next_mode) # button 6
-
+ 
     slider_thread = SliderThread()
     slider_thread.registerSlider('light', light_up, light_down)
     slider_thread.registerSlider('color', next_color, prev_color)
-    
+     
     led_thread.start()
     slider_thread.start()
-        
+
     try:
-        joystick = InputDevice('/dev/input/event1')
-        logger.info("Found joystick: " + str(joystick))
         for event in joystick.read_loop():
             if event.type == ecodes.EV_KEY:
                 log_button_event(event)
@@ -107,7 +133,7 @@ if __name__ == '__main__':
                         slider_thread.start_movement(*slider_buttons[event.code])
                     if(event.value == 0):  # button released
                         slider_thread.stop_movement(*slider_buttons[event.code])
-
+                         
     except KeyboardInterrupt:
         logger.info('Shutting all down ...')
         slider_thread.shutdown()

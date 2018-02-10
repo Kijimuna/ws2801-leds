@@ -96,7 +96,7 @@ class EdimaxPowerPlug(PowerSupply):
     Edimax SP-1101W implementation of the PowerSupply class.
     """
     
-    def __init__(self, callback, host='192.168.1.35', username='admin', password='1234'):
+    def __init__(self, callback, host, username='admin', password='1234'):
         logger.info ('Using edimax smartplug as switchable power supply.')
         self._ediplug = Smartplug(host, username, password)
         super(EdimaxPowerPlug, self).__init__(callback)

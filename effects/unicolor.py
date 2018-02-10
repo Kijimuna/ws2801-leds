@@ -88,10 +88,22 @@ class White(SingleColor):
 
 class KnightRider(_UniColor):
     
-    def __init__(self, pixelcount):
+    def __init__(self, pixelcount, half_width=4):
         super(KnightRider, self).__init__(pixelcount)
+        
+        self._half_width = half_width 
+        self._width = 2 * half_width +1
+        self.darkened = [None for _ in range(half_width)]
+
         self._h, self._l, self._s = 0, 0.5, 1.0  # red
 
+    def _update_color(self):    
+        r, g, b = _colorsys.hls_to_rgb(self._h, self._l, self._s)
+        self._r, self._g, self._b = int(round(r * 255.0)), int(round(g * 255.0)), int(round(b * 255.0))
+        for idx in range(0, self._half_width):
+            r, g, b = _colorsys.hls_to_rgb(self._h, self._l/(3**(idx+1)), self._s)
+            self.darkened[idx] = (int(round(r * 255.0)), int(round(g * 255.0)), int(round(b * 255.0)))
+        
     def get_name(self):
         return "Knight Rider"
 
@@ -100,19 +112,26 @@ class KnightRider(_UniColor):
         count = self.get_count()
         while not self._hide:
             if self._hide: return
-            for offset in range(count-7):
+            for offset in range(count-self._width):
                 self._renderAt(offset)
                 if self._hide: return
                 self._wait(0.02)
-            for offset in reversed(range(count-7)):
+            for offset in reversed(range(count-self._width)):
                 self._renderAt(offset)
                 if self._hide: return
                 self._wait(0.02)
      
     def _renderAt(self, offset):       
         self._clear()
-        for idx, l in enumerate([0.1, 0.3, 0.7, 1.0, 0.7, 0.3, 0.1]):
-            self._set_pixel(offset + idx, int(l * self._r), self._g, self._b )
+        idx = 0
+        for (r,g,b) in reversed(self.darkened):
+            self._set_pixel(offset + idx, r, g, b)
+            idx = idx + 1
+        self._set_pixel(offset + idx, self._r, self._g, self._b)
+        idx = idx + 1
+        for (r,g,b) in self.darkened:
+            self._set_pixel(offset + idx, r, g, b)
+            idx = idx + 1
         self._flush()
     
 
